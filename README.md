@@ -30,7 +30,7 @@ Start typing as usual (INSERT). Press `Esc` to enter NORMAL mode.
 | Key | Mode | Action |
 | --- | ---- | ------ |
 | `Esc` | insert | Enter NORMAL mode (passes through if autocomplete is open) |
-| `Esc` | normal | Clear a pending count/operator, else pass through (abort / clear) |
+| `Esc` | normal | First press clears a count/operator or starts a 500 ms interrupt window; second press aborts |
 | `Enter` | normal | Submit / newline (delegated to omp) |
 | `h` `j` `k` `l` | normal | Move left / down / up / right |
 | `w` `b` | normal | Word forward / back |

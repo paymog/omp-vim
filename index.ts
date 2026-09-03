@@ -42,12 +42,15 @@ export class VimEditor extends CustomEditor {
 	#count = "";
 	/** Pending operator awaiting a second key (`d`, `c`, `g`). */
 	#pending: "" | "d" | "c" | "g" = "";
+	/** Timestamp of the first Esc in a NORMAL-mode interrupt gesture. */
+	#normalEscapeAt = 0;
 
 	#setMode(mode: Mode): void {
 		if (this.#mode === mode) return;
 		this.#mode = mode;
 		this.#count = "";
 		this.#pending = "";
+		this.#normalEscapeAt = 0;
 	}
 
 	/** Repeat `fn` once per numeric-prefix count (default 1, capped for safety). */
@@ -58,6 +61,13 @@ export class VimEditor extends CustomEditor {
 	}
 
 	override handleInput(data: string): void {
+		// A terminal can batch a double-Esc gesture into one input packet.
+		if (data === "\x1b\x1b") {
+			this.handleInput("\x1b");
+			this.handleInput("\x1b");
+			return;
+		}
+
 		// INSERT mode: stock behavior, except Esc -> NORMAL (unless completing).
 		if (this.#mode === "insert") {
 			if (matchesKey(data, "escape") && !this.isShowingAutocomplete()) {
@@ -77,6 +87,9 @@ export class VimEditor extends CustomEditor {
 	}
 
 	#handleNormal(data: string): void {
+		const escape = matchesKey(data, "escape");
+		if (!escape) this.#normalEscapeAt = 0;
+
 		// Submit / newline and interrupt stay with the host.
 		if (matchesKey(data, "enter") || matchesKey(data, "ctrl+c") || matchesKey(data, "ctrl+d")) {
 			this.#count = "";
@@ -84,15 +97,18 @@ export class VimEditor extends CustomEditor {
 			super.handleInput(data);
 			return;
 		}
-		if (matchesKey(data, "escape")) {
-			// Cancel a pending operator/count first; otherwise pass through so the
-			// host's Esc (abort stream / clear) still works.
+		if (escape) {
 			if (this.#pending || this.#count) {
 				this.#pending = "";
 				this.#count = "";
-				return;
 			}
-			super.handleInput(data);
+			const now = Date.now();
+			if (now - this.#normalEscapeAt < 500) {
+				this.#normalEscapeAt = 0;
+				super.handleInput(data);
+			} else {
+				this.#normalEscapeAt = now;
+			}
 			return;
 		}
 

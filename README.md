@@ -14,8 +14,8 @@ the way upstream-Pi vim plugins do on `omp`.
 omp plugin install omp-vim
 ```
 
-Then restart the session. The status line shows `vim`, and a `-- NORMAL --`
-indicator appears below the editor whenever you are in normal mode.
+Then restart the session. A `-- NORMAL --` indicator appears below the editor
+whenever you are in normal mode.
 
 To remove:
 
@@ -33,22 +33,23 @@ Start typing as usual (INSERT). Press `Esc` to enter NORMAL mode.
 | `Esc` | normal | First press clears a count/operator or starts a 500 ms interrupt window; second press aborts |
 | `Enter` | normal | Submit / newline (delegated to omp) |
 | `h` `j` `k` `l` | normal | Move left / down / up / right |
-| `w` `b` | normal | Word forward / back |
-| `0` `$` | normal | Start / end of line |
+| `w` `b` `e` | normal | Word forward / back / end |
+| `W` `B` `E` | normal | WORD forward / back / end (whitespace-delimited) |
+| `0` `^` `$` | normal | Start / first non-blank / end of line |
 | `gg` `G` | normal | Start / end of the prompt |
+| `f` `t` `F` `T` | normal | Find char on the line (to / till, forward / back) |
+| `;` `,` | normal | Repeat last find / reverse it |
 | `i` `a` | normal | Insert before / after the cursor |
 | `I` `A` | normal | Insert at line start / end |
 | `o` `O` | normal | Open a line below / above |
 | `x` | normal | Delete character under the cursor |
 | `s` | normal | Delete character and insert |
-| `dd` | normal | Delete the current line |
-| `dw` | normal | Delete word forward |
-| `d$` `D` | normal | Delete to end of line |
-| `cc` | normal | Change the current line |
-| `cw` | normal | Change word forward |
-| `c$` `C` | normal | Change to end of line |
+| `d{motion}` | normal | Delete over any motion (`dw` `de` `dh` `d$` `dG` `df.` `d3j` …) |
+| `c{motion}` | normal | Change over any motion (`cw` is `ce`, as in Vim) |
+| `dd` `cc` | normal | Delete / change the current line |
+| `D` `C` | normal | Delete / change to end of line |
 | `u` | normal | Undo |
-| `5j`, `3w`, … | normal | Numeric count prefix repeats the motion/edit |
+| `5j`, `3f.`, … | normal | Numeric count prefix repeats the motion/edit |
 
 `Ctrl+C` / `Ctrl+D` always pass through to `omp` (clear / exit).
 

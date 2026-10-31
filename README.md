@@ -1,5 +1,7 @@
 # omp-vim
 
+[![omp status](https://omppackages.com/badge/omp-vim.svg)](https://omppackages.com/packages/omp-vim)
+
 Vim-style modal editing for the [Oh My Pi](https://github.com/can1357/oh-my-pi) (`omp`) prompt editor.
 
 `omp-vim` replaces the composer with a modal editor: an **INSERT** mode that
